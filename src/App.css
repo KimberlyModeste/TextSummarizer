@@ -73,14 +73,20 @@
 textarea {
   width: 100%;
   height: 80%;
+  padding: 20px 15px 15px 15px;
+  border-radius: 15px;
+  border-block-color: var(--slider-handle);
+  border-block-width: 8px;
 }
+
+textarea:focus {
+  border-block-color: var(--menu-color);
+}
+
 
 .row {
   height: 250px;
 }
-/* .col{
-  height: 200px;
-} */
 
 .container {
   max-width: none;
@@ -99,3 +105,14 @@ textarea {
   border-radius: 15px !important;
 }
 
+.text-submit:hover
+{
+  background-color: var(--slider-handle) !important;
+  border-color: var(--slider-handle) !important;
+}
+
+.text-submit:disabled
+{
+  background-color: #d5bfec !important;
+  border-color: #d5bfec !important;
+}
