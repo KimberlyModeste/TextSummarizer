@@ -96,7 +96,11 @@ textarea:focus {
   margin: 10px;
   font-size: small;
 }
-.text-submit
+.ui.button.text-submit 
+{
+  color: white;
+}
+.text-submit, .text-hearing-on, .text-hearing-off
 {
   float: right;
   margin-right: 10px;
@@ -104,15 +108,35 @@ textarea:focus {
   border-color: var(--menu-color) !important;
   border-radius: 15px !important;
 }
+.text-hearing-on, .text-hearing-off
+{
+  width: 40px;
+}
 
-.text-submit:hover
+.text-submit:hover, .text-hearing-on:hover
 {
   background-color: var(--slider-handle) !important;
   border-color: var(--slider-handle) !important;
 }
-
-.text-submit:disabled
+.text-hearing-off:hover
+{
+  background-color: #c9a1f4 !important;
+  border-color: #c9a1f4 !important;
+}
+.text-submit:disabled, .text-hearing-off
 {
   background-color: #d5bfec !important;
   border-color: #d5bfec !important;
 }
+
+.tooltip-wrapper {
+  display: inline-block; /* display: block works as well */
+  margin: 50px; /* make some space so the tooltip is visible */
+}
+
+.tooltip-wrapper .btn[disabled] {
+  /* don't let button block mouse events from reaching wrapper */
+  pointer-events: none;
+}
+
+/*  */
