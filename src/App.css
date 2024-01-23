@@ -1,5 +1,6 @@
 :root{
   --menu-color: #7F00FF;
+  --audio-color: #0b405f;
   --slider-handle: #9d43f6;
 }
 
@@ -85,7 +86,7 @@ textarea:focus {
 
 
 .row {
-  height: 250px;
+  height: 50vh;
 }
 
 .container {
@@ -123,6 +124,13 @@ textarea:focus {
   background-color: #c9a1f4 !important;
   border-color: #c9a1f4 !important;
 }
+
+.text-hearing-on:active:hover
+{
+  background-color: var(--audio-color) !important;
+  border-color: var(--audio-color) !important;
+}
+
 .text-submit:disabled, .text-hearing-off
 {
   background-color: #d5bfec !important;

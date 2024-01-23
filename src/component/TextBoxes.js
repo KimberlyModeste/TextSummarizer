@@ -113,6 +113,7 @@ const TextBoxes = () => {
 		recog.onresult = (event) => {
 			const result = event.results[0][0].transcript;
 			handleSetText(result+'.')
+			document.documentElement.style.setProperty("--audio-color", "#7F00FF")
 		};
 		console.log("start")
 	}
@@ -120,6 +121,7 @@ const TextBoxes = () => {
 	//Stopping voice recording because we done want to continuously record user.
 	function stopAudio(){
 		recog.stop()
+		document.documentElement.style.setProperty("--audio-color", "#0b405f")
 		console.log("end")
 	}
 
