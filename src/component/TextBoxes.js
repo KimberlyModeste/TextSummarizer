@@ -24,13 +24,14 @@ const TextBoxes = () => {
 	{
 		const SpeechRecognition = window.webkitSpeechRecognition;
 		recog = new SpeechRecognition()
+		
 	}
 
 	const[getText, setText] = useState("")				//Get user's text
-	const [activeItem, setActiveItem] = useState("b")	//Setting paragraph or bullet points
+	const [activeItem, setActiveItem] = useState("p")	//Setting paragraph or bullet points
 	const [loading, setLoading] = useState(false)		//Setting up the loading animation	
 	const [length, setLength] = useState(2)				//Values for setting the length of Paragraphs
-	const [showModal, setShowModal] = useState(false);	//Setting popup for vocal stuff
+	const [showModal, setShowModal] = useState(false);	//Setting popup for vocal stuff	
 	
 	//Height marks for slider
 	const heightMarks = {
@@ -106,24 +107,18 @@ const TextBoxes = () => {
 	const handleCloseModal = () => setShowModal(false);
 	const handleShowModal = () => setShowModal(true);
 
-	//Start recording audio each audio will be treated as a single sentence for now
+	//Start recording audio will only record one at a time, colors on click
 	function startAudio(){
+		document.documentElement.style.setProperty("--audio-color", "#0b405f")
 		recog.start()
-		console.log(recog)
 		recog.onresult = (event) => {
 			const result = event.results[0][0].transcript;
 			handleSetText(result+'.')
 			document.documentElement.style.setProperty("--audio-color", "#7F00FF")
 		};
-		console.log("start")
 	}
 	
-	//Stopping voice recording because we done want to continuously record user.
-	function stopAudio(){
-		recog.stop()
-		document.documentElement.style.setProperty("--audio-color", "#0b405f")
-		console.log("end")
-	}
+
 
 	return (
 		<div className='text-box'>
@@ -173,12 +168,7 @@ const TextBoxes = () => {
 						</Button>
 						{
 							canUseAudio ?
-								<Button 
-									className='text-hearing-on'
-									onMouseDown={startAudio}
-									onMouseUp={stopAudio}
-									onMouseLeave={stopAudio}
-								>
+								<Button className='text-hearing-on' onClick={startAudio}>
 									<Icon  name='microphone' />
 								</Button>
 							:
