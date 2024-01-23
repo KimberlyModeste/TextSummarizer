@@ -178,7 +178,7 @@ const TextBoxes = () => {
 						}
 					</Col>
 					<Col>
-						<textarea className="text-output" />
+						<textarea className="text-output" readOnly/>
 					</Col>
 				</Row>
 			</Container>
