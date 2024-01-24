@@ -1,6 +1,7 @@
 :root{
   --menu-color: #7F00FF;
   --audio-color: #7F00FF;
+  --audio-color-mic: white;
   --slider-handle: #9d43f6;
 }
 
@@ -98,7 +99,8 @@ textarea:focus {
 .text-hearing-on
 {
   background-color: var(--audio-color) !important;
-  border-color: var(--audio-color) !important;
+  border-color: var(--audio-color-mic) !important;
+  color: var(--audio-color-mic) !important;
 }
 
 .text-submit:disabled, .text-hearing-off

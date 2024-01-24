@@ -109,12 +109,14 @@ const TextBoxes = () => {
 
 	//Start recording audio will only record one at a time, colors on click
 	function startAudio(){
-		document.documentElement.style.setProperty("--audio-color", "#0b405f")
-		recog.start()
+    recog.start()
+		document.documentElement.style.setProperty("--audio-color", "#f3effa")
+		document.documentElement.style.setProperty("--audio-color-mic", "black")
 		recog.onresult = (event) => {
 			const result = event.results[0][0].transcript;
 			handleSetText(result+'.')
 			document.documentElement.style.setProperty("--audio-color", "#7F00FF")
+			document.documentElement.style.setProperty("--audio-color-mic", "white")
 		};
 	}
 	
