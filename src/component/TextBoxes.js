@@ -2,13 +2,13 @@ import Axios from 'axios'
 import React, {useState} from 'react'
 import Slider from 'rc-slider';
 import {Container, Row, Col, Button, Modal }from 'react-bootstrap';
-import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
+import { Menu, MenuItem, Loader, Icon, Dimmer} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
 
 //This encompaces all of the logic around the textboxes
-const TextBoxes = () => {
+const TextBoxes = (props) => {
 
 	//Checking if current browser is Speech Recognition compatible 
 	let userAgentString = navigator.userAgent; 
@@ -27,11 +27,12 @@ const TextBoxes = () => {
 		
 	}
 
-	const[getText, setText] = useState("")				//Get user's text
-	const [activeItem, setActiveItem] = useState("p")	//Setting paragraph or bullet points
-	const [loading, setLoading] = useState(false)		//Setting up the loading animation	
-	const [length, setLength] = useState(2)				//Values for setting the length of Paragraphs
-	const [showModal, setShowModal] = useState(false);	//Setting popup for vocal stuff	
+	const[getText, setText] = useState("")								//Get user's text
+	const [activeItem, setActiveItem] = useState("p")					//Setting paragraph or bullet points
+	const [loadingSubmit, setloadingSubmit] = useState(false)			//Setting up the loading animation for submission
+	const [loadingSpellCheck, setLoadingSpellCheck] = useState(false)	//Setting up the loading animation	
+	const [length, setLength] = useState(2)								//Values for setting the length of Paragraphs
+	const [showModal, setShowModal] = useState(false);					//Setting popup for vocal stuff	
 	
 	//Height marks for slider
 	const heightMarks = {
@@ -45,7 +46,11 @@ const TextBoxes = () => {
 	const handleSetText = (e) => {
 		e.target ? setText(e.target.value) : setText(e)
 		if(!e.target){
-			document.getElementsByClassName("text-input")[0].value += ' '+ e.charAt(0).toUpperCase() + e.slice(1);
+			let temp = document.getElementsByClassName("text-input")[0].value += ' '+ e.charAt(0).toUpperCase() + e.slice(1)
+				if(temp[0] === ' ')
+					temp=temp.substring(1)
+
+			document.getElementsByClassName("text-input")[0].value = temp
 		}		
 }
 	//Handling bullet vs paragrah click
@@ -56,23 +61,67 @@ const TextBoxes = () => {
 	}
 
 	//Handling text submission
-	function handleSubmit(){
-		//Clearing output box
-		document.getElementsByClassName("text-output")[0].value = ''
+	async function handleSubmit(){
+		// //Clearing output box
+		// document.getElementsByClassName("text-output")[0].value = ''
+		// if(props.spellCheckToggle)
+		// {
+		// 	console.log("Here in the if")
+		// 	let temp = getText
+		// 	if(temp[0] === ' ')
+		// 		temp=temp.substring(1)
 
-		//Sanitizing boxes that are like [1] or [a] like from wikipedia
+		// 	const data = {text: temp}
+		// 	setLoadingSpellCheck(true)
+		// 	console.log("before spell check")
+		// 	let res = await spellcheck(data)
+
+		// 	console.log("After spell check")
+		// 	let sanitizeText = getText
+		// 	sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
+
+		// 	//Setting the data in a more searchable form
+		// 	let data2 = {
+		// 		text: sanitizeText
+		// 	}
+		// 	//Adding the length to data and 0 if its a bullet
+		// 	activeItem === 'p' ? data.length = length : data.length = 0
+		// 	setloadingSubmit(true)
+		// 	posting(data2)
+		// }
+		// else{
+		// 	//Sanitizing boxes that are like [1] or [a] like from wikipedia
+		// 	let sanitizeText = getText
+		// 	sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
+
+		// 	//Setting the data in a more searchable form
+		// 	let data = {
+		// 		text: sanitizeText
+		// 	}
+
+		// 	//Adding the length to data and 0 if its a bullet
+		// 	activeItem === 'p' ? data.length = length : data.length = 0
+
+		// 	setloadingSubmit(true)
+
+		// 	posting(data)
+		// }
 		let sanitizeText = getText
 		sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
 
-		//Setting the data in a more searchable form
-		let data = {
-			text: sanitizeText
+		const data = {text: sanitizeText}
+		
+		let waiting
+		if(props.spellCheckToggle)
+		{
+			setLoadingSpellCheck(true)
+			console.log("before spell check")
+			waiting = await spellcheck(data)
+			console.log(waiting)
 		}
 
-		//Adding the length to data and 0 if its a bullet
 		activeItem === 'p' ? data.length = length : data.length = 0
-
-		setLoading(true)
+		setloadingSubmit(true)
 		posting(data)
 	}
 
@@ -91,12 +140,12 @@ const TextBoxes = () => {
 		.then((result)=>{
 			console.log("Then 2", result)
 			document.getElementsByClassName("text-output")[0].value = result
-			setLoading(false) 
+			setloadingSubmit(false) 
 			return result
 		})
 		.catch((err)=>{
 			console.log("There was an error: ", err)
-			setLoading(false)
+			setloadingSubmit(false)
 			return "Error"
 		})
 
@@ -108,19 +157,54 @@ const TextBoxes = () => {
 	const handleShowModal = () => setShowModal(true);
 
 	//Start recording audio will only record one at a time, colors on click
+	//if spell check is turned on will spell check after talking.
 	function startAudio(){
-    recog.start()
-		document.documentElement.style.setProperty("--audio-color", "#f3effa")
+    	recog.start()
+		document.documentElement.style.setProperty("--audio-color", "#DFDFDF")
 		document.documentElement.style.setProperty("--audio-color-mic", "black")
 		recog.onresult = (event) => {
 			const result = event.results[0][0].transcript;
+			console.log(event.results)
+			console.log(result)
 			handleSetText(result+'.')
 			document.documentElement.style.setProperty("--audio-color", "#7F00FF")
 			document.documentElement.style.setProperty("--audio-color-mic", "white")
-		};
-	}
-	
+			
+			if(props.spellCheckToggle)
+			{
+				let temp = document.getElementsByClassName("text-input")[0].value
+				if(temp[0] === ' ')
+					temp=temp.substring(1)
+				const data = {text: temp}
+				setLoadingSpellCheck(true)
+				spellcheck(data)
+			}
+		}
+	};
 
+	async function spellcheck(data)
+	{
+		const headers={'Content-Type': 'application/json;charset=utf-8'}
+		
+		//Sending the data to the backend
+		let result = await Axios.post("http://localhost:8080/spellcheck", data, {headers: headers})
+		.then((res)=>{
+			console.log("Then 1", res.data)
+			return res.data.summary
+		})
+		.then((result)=>{
+			console.log("Then 2", result)
+			document.getElementsByClassName("text-input")[0].value = result
+			setLoadingSpellCheck(false) 
+			return result
+		})
+		.catch((err)=>{
+			console.log("There was an error: ", err)
+			setLoadingSpellCheck(false)
+			return "Error"
+		})
+		console.log(result)
+	}
 
 	return (
 		<div className='text-box'>
@@ -164,13 +248,22 @@ const TextBoxes = () => {
 				</Menu>
 				<Row>
 					<Col>
-						<textarea className="text-input" placeholder='Enter the text you want to summarize...' onChange={handleSetText} />
-						<Button className='text-submit' onClick={handleSubmit} disabled={loading}>
-							{loading ? <Loader active inline />: <>submit</>}
+						{
+							loadingSpellCheck ?
+							<div className='dim'>
+								<Loader active center />
+							</div>
+							:<></>
+						}
+
+						<textarea className="text-input" placeholder='Enter the text you want to summarize...' readOnly={loadingSpellCheck} onChange={handleSetText} />
+						
+						<Button className='text-submit' onClick={handleSubmit} disabled={loadingSubmit || loadingSpellCheck}>
+							{loadingSubmit ? <Loader active inline />: <>submit</>}
 						</Button>
 						{
 							canUseAudio ?
-								<Button className='text-hearing-on' onClick={startAudio}>
+								<Button className='text-hearing-on' onClick={startAudio} disabled={loadingSpellCheck}>
 									<Icon  name='microphone' />
 								</Button>
 							:
@@ -188,7 +281,7 @@ const TextBoxes = () => {
 				<Modal.Header closeButton>
 					<Modal.Title>Whoops! Sorry!</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>Voice dictation not supported by current browser. Try using Chrome, Safari or Edge.</Modal.Body>
+				<Modal.Body>Voice recording not supported by current browser. Try using Chrome, Safari or Edge.</Modal.Body>
 				<Modal.Footer>
 					<Button variant="primary" onClick={handleCloseModal}>
 						close

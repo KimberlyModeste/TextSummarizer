@@ -12,11 +12,13 @@ const NavBar = (props) => {
 
   // const handleItemClick = (e, { name }) => setActiveItem(name);
   // const [activeItem, setActiveItem] = useState(path);
-  const [activeFlag, setActiveFlag] = useState('us');
+  // const [activeFlag, setActiveFlag] = useState('us');
+  const [activeCheck, setActiveCheck] = useState(false);
+  const handleActiveClick = (e) => setActiveCheck(!activeCheck)
 
-  function handleDropdown (e, {text}){
-      setActiveFlag(text)
-  }
+  // function handleDropdown (e, {text}){
+  //     setActiveFlag(text)
+  // }
 
 
   return (
@@ -27,7 +29,7 @@ const NavBar = (props) => {
       </Menu.Item>
     </Menu.Menu>
     <Menu.Menu position="right">
-      <Menu.Item>
+      {/* <Menu.Item>
         <i class={activeFlag+" flag"} />
         <Dropdown scrolling>
           <Dropdown.Menu onClick={e => e.stopPropagation()}>
@@ -36,16 +38,18 @@ const NavBar = (props) => {
             <Dropdown.Item onClick={handleDropdown} text="ca"><i class="ca flag" /> Canadian English</Dropdown.Item>
             <Dropdown.Item onClick={handleDropdown} text="au"><i class="au flag" /> Australian English</Dropdown.Item>
             <Dropdown.Item onClick={handleDropdown} text="uk"><i class="uk flag" /> UK English</Dropdown.Item>
-{/* 
-            <Dropdown.Item onClick={handleDropdown} text="jp"><i class="jp flag" />  Japanese</Dropdown.Item>
-            <Dropdown.Item onClick={handleDropdown} text="se"><i class="se flag" /> Sweden</Dropdown.Item>
-            <Dropdown.Item onClick={handleDropdown} text="kr"><i class="kr flag" /> Korean</Dropdown.Item> */}
-        
           </Dropdown.Menu>
           
         </Dropdown>
 
-      </Menu.Item>
+      </Menu.Item> */}
+        <Menu.Item>
+        {props.handleCallBack(activeCheck)}
+          <div className="ui toggle checkbox">
+            <input type="checkbox" name="public" checked={activeCheck} onChange={handleActiveClick}/>
+            <label>Spell Check</label>
+          </div>
+        </Menu.Item>
     </Menu.Menu>
   </Menu>
   );

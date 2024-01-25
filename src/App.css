@@ -137,3 +137,14 @@ textarea:focus {
   bottom: 0;
 }
 
+div.dim {
+  width: 40vw;
+  height: 50vh;
+  background-color: rgba(0,0,0,.3);
+  pointer-events: none;
+  position: absolute;
+  display: inline-block;
+  top: 17vh;
+  left: 10vw;
+  z-index: 100;
+}
