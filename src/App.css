@@ -148,3 +148,7 @@ div.dim {
   left: 10vw;
   z-index: 100;
 }
+
+.modal-text{
+  text-align: center;
+}

@@ -6,7 +6,7 @@ function Home() {
 	const [activeToggle, setActiveToggle] = useState(false); //This is default of the toggle that we get from the navbar
 
 	//This is how we get the navbar information
-	function callback(childData){
+	function callback (childData) {
 		let temp = childData
 		setActiveToggle(temp)
 	}
