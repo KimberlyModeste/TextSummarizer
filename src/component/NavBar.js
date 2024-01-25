@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Menu, Icon, Dropdown } from 'semantic-ui-react';
+import React, { useState } from 'react'
+import { Menu} from 'semantic-ui-react';
 import '../App.css'
-// import { Dropdown } from 'react-bootstrap';
-
 
 const NavBar = (props) => {
 
-  // const pathname = window.location.hash;
-
-  // let path = pathname.split('/').length > 1 ? pathname.split('/')[1] === '' ? 'home' : pathname.split('/')[1] : 'home'
-
-  // const handleItemClick = (e, { name }) => setActiveItem(name);
-  // const [activeItem, setActiveItem] = useState(path);
-  // const [activeFlag, setActiveFlag] = useState('us');
-  const [activeCheck, setActiveCheck] = useState(false);
-  const handleActiveClick = (e) => setActiveCheck(!activeCheck)
-
-  // function handleDropdown (e, {text}){
-  //     setActiveFlag(text)
-  // }
-
+  const [activeCheck, setActiveCheck] = useState(false);        //The toggle
+  const handleActiveClick = () => setActiveCheck(!activeCheck)  //The toggle handler if click change to the opposite it was
 
   return (
   <Menu className='fullNavBar' pointing secondary size="large" >
@@ -29,20 +15,6 @@ const NavBar = (props) => {
       </Menu.Item>
     </Menu.Menu>
     <Menu.Menu position="right">
-      {/* <Menu.Item>
-        <i class={activeFlag+" flag"} />
-        <Dropdown scrolling>
-          <Dropdown.Menu onClick={e => e.stopPropagation()}>
-            <Dropdown.Header>Try summarizing in: </Dropdown.Header>
-            <Dropdown.Item onClick={handleDropdown} text="us"><i class="us flag" /> American English</Dropdown.Item>
-            <Dropdown.Item onClick={handleDropdown} text="ca"><i class="ca flag" /> Canadian English</Dropdown.Item>
-            <Dropdown.Item onClick={handleDropdown} text="au"><i class="au flag" /> Australian English</Dropdown.Item>
-            <Dropdown.Item onClick={handleDropdown} text="uk"><i class="uk flag" /> UK English</Dropdown.Item>
-          </Dropdown.Menu>
-          
-        </Dropdown>
-
-      </Menu.Item> */}
         <Menu.Item>
         {props.handleCallBack(activeCheck)}
           <div className="ui toggle checkbox">

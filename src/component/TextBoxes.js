@@ -2,7 +2,7 @@ import Axios from 'axios'
 import React, {useState} from 'react'
 import Slider from 'rc-slider';
 import {Container, Row, Col, Button, Modal }from 'react-bootstrap';
-import { Menu, MenuItem, Loader, Icon, Dimmer} from 'semantic-ui-react';
+import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
@@ -62,66 +62,30 @@ const TextBoxes = (props) => {
 
 	//Handling text submission
 	async function handleSubmit(){
-		// //Clearing output box
-		// document.getElementsByClassName("text-output")[0].value = ''
-		// if(props.spellCheckToggle)
-		// {
-		// 	console.log("Here in the if")
-		// 	let temp = getText
-		// 	if(temp[0] === ' ')
-		// 		temp=temp.substring(1)
-
-		// 	const data = {text: temp}
-		// 	setLoadingSpellCheck(true)
-		// 	console.log("before spell check")
-		// 	let res = await spellcheck(data)
-
-		// 	console.log("After spell check")
-		// 	let sanitizeText = getText
-		// 	sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
-
-		// 	//Setting the data in a more searchable form
-		// 	let data2 = {
-		// 		text: sanitizeText
-		// 	}
-		// 	//Adding the length to data and 0 if its a bullet
-		// 	activeItem === 'p' ? data.length = length : data.length = 0
-		// 	setloadingSubmit(true)
-		// 	posting(data2)
-		// }
-		// else{
-		// 	//Sanitizing boxes that are like [1] or [a] like from wikipedia
-		// 	let sanitizeText = getText
-		// 	sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
-
-		// 	//Setting the data in a more searchable form
-		// 	let data = {
-		// 		text: sanitizeText
-		// 	}
-
-		// 	//Adding the length to data and 0 if its a bullet
-		// 	activeItem === 'p' ? data.length = length : data.length = 0
-
-		// 	setloadingSubmit(true)
-
-		// 	posting(data)
-		// }
+		//Sanitizing boxes that are like [1] or [a] like from wikipedia
 		let sanitizeText = getText
 		sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
 
+		//Setting the data in a more searchable form
 		const data = {text: sanitizeText}
 		
+		//Set waiting if i need it in the future 
 		let waiting
 		if(props.spellCheckToggle)
 		{
+			//Set the loading for spell check and wait for it
 			setLoadingSpellCheck(true)
-			console.log("before spell check")
 			waiting = await spellcheck(data)
 			console.log(waiting)
 		}
 
+		//Adding the length to data and 0 if its a bullet
 		activeItem === 'p' ? data.length = length : data.length = 0
+		
+		//Set the loading for the submit button
 		setloadingSubmit(true)
+
+		//waiting value to come back
 		posting(data)
 	}
 
@@ -206,6 +170,13 @@ const TextBoxes = (props) => {
 		console.log(result)
 	}
 
+	/* In this component theeres a menu that changes paragraph or bullets then 2 textareas in rows and columns.
+	* One for the users and the other a readonly for the output. In the user input col we have a dimmer that 
+  * shows itself when doing spell check and disables the buttons (Might delete later). U-input also has
+  * a microphone button that allows you to record your text, but it doesn't work on every browser so on browsers
+  * that doesn't support voice reecording it is a mic with a slash and if clicked it pops up a modal that 
+  * tells you this information and which browsers are supported.
+  */
 	return (
 		<div className='text-box'>
 			<Container>
@@ -255,7 +226,6 @@ const TextBoxes = (props) => {
 							</div>
 							:<></>
 						}
-
 						<textarea className="text-input" placeholder='Enter the text you want to summarize...' readOnly={loadingSpellCheck} onChange={handleSetText} />
 						
 						<Button className='text-submit' onClick={handleSubmit} disabled={loadingSubmit || loadingSpellCheck}>
