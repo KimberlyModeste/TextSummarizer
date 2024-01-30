@@ -94,7 +94,7 @@ const TextBoxes = (props) => {
 	async function posting(data)
 	{
 		//Adding headers
-		const headers={'Content-Type': 'application/json;charset=utf-8'}
+		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 
 		//Sending the data to the backend
 		let result = await Axios.post(url+"/summary", data, {headers: headers})
@@ -149,7 +149,7 @@ const TextBoxes = (props) => {
 
 	async function spellcheck(data)
 	{
-		const headers={'Content-Type': 'application/json;charset=utf-8'}
+		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 		
 		//Sending the data to the backend
 		let result = await Axios.post(url+"/spellcheck", data, {headers: headers})

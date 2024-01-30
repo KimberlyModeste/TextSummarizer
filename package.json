@@ -20,7 +20,7 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -b master -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -51,5 +51,5 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2"
   },
-  "homepage": "https://kimberlymodeste.github.io/TextSummarizer/"
+  "homepage": "https://kimberlymodeste.github.io/TextSummarizer"
 }
