@@ -6,7 +6,11 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = "https://textsummarizerserver.fly.dev" //The place I deployed my stuff :3
+const url = "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
+// "https://text-summarizer-server-git-dev-kimberlymodestes-projects.vercel.app"
+// "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
+// "https://text-summarizer-server-git-master-kimberlymodestes-projects.vercel.app"
+// "https://textsummarizerserver.fly.dev" //The place I deployed my stuff :3
 
 //This encompaces all of the logic around the textboxes
 const TextBoxes = (props) => {
@@ -97,7 +101,7 @@ const TextBoxes = (props) => {
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 
 		//Sending the data to the backend
-		let result = await Axios.post(url+"/summary", data, {headers: headers})
+		let result = await Axios.get(url+"/summary", data, {headers: headers})
 		.then((res)=>{
 			console.log("Then 1", res.data)
 			return res.data.summary
@@ -152,7 +156,7 @@ const TextBoxes = (props) => {
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 		
 		//Sending the data to the backend
-		let result = await Axios.post(url+"/spellcheck", data, {headers: headers})
+		let result = await Axios.get(url+"/spellcheck", data, {headers: headers})
 		.then((res)=>{
 			console.log("Then 1", res.data)
 			return res.data.summary
