@@ -6,7 +6,7 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
+const url = "https://text-summarizer-server-theta.vercel.app"
 // "https://text-summarizer-server-git-dev-kimberlymodestes-projects.vercel.app"
 // "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
 // "https://text-summarizer-server-git-master-kimberlymodestes-projects.vercel.app"
