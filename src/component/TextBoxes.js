@@ -1,3 +1,4 @@
+
 import Axios from 'axios'
 import React, {useState} from 'react'
 import Slider from 'rc-slider';
@@ -6,7 +7,9 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = "https://text-summarizer-server-theta.vercel.app"
+const url = 'http://localhost:5000'
+// 'https://textsummarizerserver.fly.dev'
+// "https://text-summarizer-server-theta.vercel.app"
 // "https://text-summarizer-server-git-dev-kimberlymodestes-projects.vercel.app"
 // "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
 // "https://text-summarizer-server-git-master-kimberlymodestes-projects.vercel.app"
@@ -72,7 +75,7 @@ const TextBoxes = (props) => {
 		sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
 
 		//Setting the data in a more searchable form
-		const data = {text: sanitizeText}
+		let data = {text: sanitizeText}
 		
 		//Set waiting if i need it in the future 
 		let waiting
@@ -81,12 +84,14 @@ const TextBoxes = (props) => {
 			//Set the loading for spell check and wait for it
 			setLoadingSpellCheck(true)
 			waiting = await spellcheck(data)
-			console.log(waiting)
+			data = {text : waiting}
+			console.log(data)
 		}
 
+		
 		//Adding the length to data and 0 if its a bullet
 		activeItem === 'p' ? data.length = length : data.length = 0
-		
+
 		//Set the loading for the submit button
 		setloadingSubmit(true)
 
@@ -100,8 +105,9 @@ const TextBoxes = (props) => {
 		//Adding headers
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 
+		console.log(data)
 		//Sending the data to the backend
-		let result = await Axios.get(url+"/summary", data, {headers: headers})
+		let result = await Axios.post(url+"/summary", data, {headers: headers})
 		.then((res)=>{
 			console.log("Then 1", res.data)
 			return res.data.summary
@@ -156,13 +162,11 @@ const TextBoxes = (props) => {
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
 		
 		//Sending the data to the backend
-		let result = await Axios.get(url+"/spellcheck", data, {headers: headers})
+		let result = await Axios.post(url+"/spellcheck", data, {headers: headers})
 		.then((res)=>{
-			console.log("Then 1", res.data)
 			return res.data.summary
 		})
 		.then((result)=>{
-			console.log("Then 2", result)
 			document.getElementsByClassName("text-input")[0].value = result
 			setLoadingSpellCheck(false) 
 			return result
@@ -172,16 +176,17 @@ const TextBoxes = (props) => {
 			setLoadingSpellCheck(false)
 			return "Error"
 		})
-		console.log(result)
+
+		return result
 	}
 
 	/* In this component theeres a menu that changes paragraph or bullets then 2 textareas in rows and columns.
 	* One for the users and the other a readonly for the output. In the user input col we have a dimmer that 
-  * shows itself when doing spell check and disables the buttons (Might delete later). U-input also has
-  * a microphone button that allows you to record your text, but it doesn't work on every browser so on browsers
-  * that doesn't support voice reecording it is a mic with a slash and if clicked it pops up a modal that 
-  * tells you this information and which browsers are supported.
-  */
+    * shows itself when doing spell check and disables the buttons (Might delete later). U-input also has
+    * a microphone button that allows you to record your text, but it doesn't work on every browser so on browsers
+    * that doesn't support voice reecording it is a mic with a slash and if clicked it pops up a modal that 
+    * tells you this information and which browsers are supported.
+    */
 	return (
 		<div className='text-box'>
 			<Container>
@@ -224,17 +229,11 @@ const TextBoxes = (props) => {
 				</Menu>
 				<Row>
 					<Col>
-						{
-							loadingSpellCheck ?
-							<div className='dim'>
-								<Loader active center />
-							</div>
-							:<></>
-						}
-						<textarea className="text-input" placeholder='Enter the text you want to summarize...' readOnly={loadingSpellCheck} onChange={handleSetText} />
+					
+						<textarea className="text-input" placeholder='Enter the text you want to summarize...' readOnly={loadingSpellCheck || loadingSubmit} onChange={handleSetText} />
 						
 						<Button className='text-submit' onClick={handleSubmit} disabled={loadingSubmit || loadingSpellCheck}>
-							{loadingSubmit ? <Loader active inline />: <>submit</>}
+							{(loadingSubmit || loadingSpellCheck) ? <Loader active inline />: <>submit</>}
 						</Button>
 						{
 							canUseAudio ?
