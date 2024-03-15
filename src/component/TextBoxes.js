@@ -7,13 +7,7 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = 'http://localhost:5000'
-// 'https://textsummarizerserver.fly.dev'
-// "https://text-summarizer-server-theta.vercel.app"
-// "https://text-summarizer-server-git-dev-kimberlymodestes-projects.vercel.app"
-// "https://vercel.com/kimberlymodestes-projects/text-summarizer-server"
-// "https://text-summarizer-server-git-master-kimberlymodestes-projects.vercel.app"
-// "https://textsummarizerserver.fly.dev" //The place I deployed my stuff :3
+const url = 'https://textsummarizerserver.onrender.com'	//The place I deployed my stuff :3
 
 //This encompaces all of the logic around the textboxes
 const TextBoxes = (props) => {
@@ -41,6 +35,7 @@ const TextBoxes = (props) => {
 	const [loadingSpellCheck, setLoadingSpellCheck] = useState(false)	//Setting up the loading animation	
 	const [length, setLength] = useState(2)								//Values for setting the length of Paragraphs
 	const [showModal, setShowModal] = useState(false);					//Setting popup for vocal stuff	
+	const [showErrorModal, setShowErrorModal] = useState(false);		//Setting popup for errors	
 	
 	//Height marks for slider
 	const heightMarks = {
@@ -121,6 +116,7 @@ const TextBoxes = (props) => {
 		.catch((err)=>{
 			console.log("There was an error: ", err)
 			setloadingSubmit(false)
+			setShowErrorModal(true)
 			return "Error"
 		})
 
@@ -130,6 +126,7 @@ const TextBoxes = (props) => {
 	//opening and closing the Audio not available modal
 	const handleCloseModal = () => setShowModal(false);
 	const handleShowModal = () => setShowModal(true);
+	const handleCloseErrorModal = () => setShowErrorModal(false)
 
 	//Start recording audio will only record one at a time, colors on click
 	//if spell check is turned on will spell check after talking.
@@ -173,6 +170,7 @@ const TextBoxes = (props) => {
 		})
 		.catch((err)=>{
 			console.log("There was an error: ", err)
+			setShowErrorModal(true)
 			setLoadingSpellCheck(false)
 			return "Error"
 		})
@@ -258,6 +256,17 @@ const TextBoxes = (props) => {
 				<Modal.Body>Voice recording not supported by current browser. Try using Chrome, Safari or Edge.</Modal.Body>
 				<Modal.Footer>
 					<Button variant="primary" onClick={handleCloseModal}>
+						close
+					</Button>
+				</Modal.Footer>
+			</Modal>
+			<Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+				<Modal.Header color='red' closeButton>
+					<Modal.Title>Error</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>Whoops! Looks like there was an Error</Modal.Body>
+				<Modal.Footer>
+					<Button variant="danger" onClick={handleCloseModal}>
 						close
 					</Button>
 				</Modal.Footer>
