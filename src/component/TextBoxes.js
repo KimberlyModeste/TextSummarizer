@@ -7,7 +7,6 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = 'https://textsummarizerserver.onrender.com'	//The place I deployed bullet and spellcheck
 
 //This encompaces all of the logic around the textboxes
 const TextBoxes = (props) => {
@@ -80,7 +79,6 @@ const TextBoxes = (props) => {
 			setLoadingSpellCheck(true)
 			waiting = await spellcheck(data)
 			data = {text : waiting}
-			console.log(data)
 		}
 
 		
@@ -99,27 +97,22 @@ const TextBoxes = (props) => {
 	{
 		//Adding headers
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
-		// const headers={'Access-Control-Allow-Origin': '*'}
 
-		console.log(data)
 		let tempURL = ''
 		if(data.length === 0)
 		{
-			tempURL = url+'/summary'
+			tempURL = 'https://bpbanngmzuzhmwk7j7u4fqk4ja0qoypu.lambda-url.us-east-2.on.aws/' //This goes to the bullet lambda
 		}
 		else{
-			tempURL = 'https://u4xp24wg2pbwu5hlzktkrqog6e0xgjvw.lambda-url.us-east-2.on.aws/'
+			tempURL = 'https://u4xp24wg2pbwu5hlzktkrqog6e0xgjvw.lambda-url.us-east-2.on.aws/' //This goes to the summary lambda
 		}
 
 		//Sending the data to the backend
-		console.log(tempURL)
 		let result = await Axios.post(tempURL, data, {headers: headers})
 		.then((res)=>{
-			console.log("Then 1", res.data)
-			return res.data.summary
+			return res.data.summary 
 		})
 		.then((result)=>{
-			console.log("Then 2", result)
 			document.getElementsByClassName("text-output")[0].value = result
 			setloadingSubmit(false) 
 			return result
@@ -147,8 +140,6 @@ const TextBoxes = (props) => {
 		document.documentElement.style.setProperty("--audio-color-mic", "black")
 		recog.onresult = (event) => {
 			const result = event.results[0][0].transcript;
-			console.log(event.results)
-			console.log(result)
 			handleSetText(result+'.')
 			document.documentElement.style.setProperty("--audio-color", "#7F00FF")
 			document.documentElement.style.setProperty("--audio-color-mic", "white")
@@ -168,9 +159,9 @@ const TextBoxes = (props) => {
 	async function spellcheck(data)
 	{
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
-		
-		//Sending the data to the backend
-		let result = await Axios.post(url+"/spellcheck", data, {headers: headers})
+
+		//Sending the data to the spellcheck lambda		
+		let result = await Axios.post('https://6eyanay7qhiftgkgv7vnai7yry0pecqx.lambda-url.us-east-2.on.aws/', data, {headers: headers})
 		.then((res)=>{
 			return res.data.summary
 		})
