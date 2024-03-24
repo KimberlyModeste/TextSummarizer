@@ -7,7 +7,7 @@ import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
-const url = 'https://textsummarizerserver.onrender.com'	//The place I deployed my stuff :3
+const url = 'https://textsummarizerserver.onrender.com'	//The place I deployed bullet and spellcheck
 
 //This encompaces all of the logic around the textboxes
 const TextBoxes = (props) => {
@@ -99,10 +99,21 @@ const TextBoxes = (props) => {
 	{
 		//Adding headers
 		const headers={'Content-Type': 'application/json;charset=utf-8', 'Access-Control-Allow-Origin': '*'}
+		// const headers={'Access-Control-Allow-Origin': '*'}
 
 		console.log(data)
+		let tempURL = ''
+		if(data.length === 0)
+		{
+			tempURL = url+'/summary'
+		}
+		else{
+			tempURL = 'https://u4xp24wg2pbwu5hlzktkrqog6e0xgjvw.lambda-url.us-east-2.on.aws/'
+		}
+
 		//Sending the data to the backend
-		let result = await Axios.post(url+"/summary", data, {headers: headers})
+		console.log(tempURL)
+		let result = await Axios.post(tempURL, data, {headers: headers})
 		.then((res)=>{
 			console.log("Then 1", res.data)
 			return res.data.summary
@@ -261,12 +272,12 @@ const TextBoxes = (props) => {
 				</Modal.Footer>
 			</Modal>
 			<Modal show={showErrorModal} onHide={handleCloseErrorModal}>
-				<Modal.Header color='red' closeButton>
+				<Modal.Header className='error-modal' closeButton>
 					<Modal.Title>Error</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>Whoops! Looks like there was an Error</Modal.Body>
+				<Modal.Body className='error-modal-text'>Whoops! Looks like there was an Error</Modal.Body>
 				<Modal.Footer>
-					<Button variant="danger" onClick={handleCloseModal}>
+					<Button variant="danger" onClick={handleCloseErrorModal}>
 						close
 					</Button>
 				</Modal.Footer>

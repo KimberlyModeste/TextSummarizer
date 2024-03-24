@@ -109,6 +109,14 @@ textarea:focus {
   border-color: #d5bfec !important;
 }
 
+.error-modal{
+  background-color: orangered;
+}
+
+.error-modal-text{
+  text-align: center;
+}
+
 #page-container {
   min-height: 100vh;
   position: relative;
