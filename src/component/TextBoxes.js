@@ -1,12 +1,13 @@
 
 import Axios from 'axios'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Slider from 'rc-slider';
 import {Container, Row, Col, Button, Modal }from 'react-bootstrap';
-import { Menu, MenuItem, Loader, Icon} from 'semantic-ui-react';
+import { Menu, MenuItem, Loader, Icon, Dimmer} from 'semantic-ui-react';
 
 
 import "rc-slider/assets/index.css";
+import BouncingDotsLoader from './BouncingDots';
 
 //This encompaces all of the logic around the textboxes
 const TextBoxes = (props) => {
@@ -17,15 +18,16 @@ const TextBoxes = (props) => {
 	let IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1; 
 	let safariAgent = userAgentString.indexOf("Safari") > -1;
 	let operaAgent = userAgentString.indexOf("OP") > -1;
-	let canUseAudio = (chromeAgent || IExplorerAgent || safariAgent) && !operaAgent
+	let androidAgent = userAgentString.indexOf("Android") > -1;
+	let iPhoneAgent = userAgentString.indexOf("iPhone") > -1;
+	let canUseAudio = ((chromeAgent || IExplorerAgent || safariAgent) && !operaAgent) && (!androidAgent && !iPhoneAgent)
 	let recog
 
 	//If you can use the audio start it up
 	if(canUseAudio)
 	{
-		const SpeechRecognition = window.webkitSpeechRecognition;
+		const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
 		recog = new SpeechRecognition()
-		
 	}
 
 	const[getText, setText] = useState("")								//Get user's text
@@ -35,7 +37,19 @@ const TextBoxes = (props) => {
 	const [length, setLength] = useState(2)								//Values for setting the length of Paragraphs
 	const [showModal, setShowModal] = useState(false);					//Setting popup for vocal stuff	
 	const [showErrorModal, setShowErrorModal] = useState(false);		//Setting popup for errors	
-	
+	const [width, setWidth] = useState(window.innerWidth);				//Setting up for window changes
+
+	function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
 	//Height marks for slider
 	const heightMarks = {
 		1: " ",
@@ -190,43 +204,43 @@ const TextBoxes = (props) => {
 	return (
 		<div className='text-box'>
 			<Container>
-				<Menu pointing secondary size="large" >
-					<Menu.Menu position="left">
-						<MenuItem disabled>
-							Modes:
-						</MenuItem>
-						<Menu.Item name = "Paragraph"
-						active={activeItem === 'p'}
-						onClick={handleItemClick}
-						/>
-					
-						<Menu.Item name = "Bullet Points"
-						active={activeItem === 'b'}
-						onClick={handleItemClick}
-						/>
-					</Menu.Menu>
-					{
-						activeItem === 'p'? 
-							<Menu.Menu  position="right">
-								<MenuItem disabled>
-									Summary Length:
-								</MenuItem>
-								<Menu.Item>
-									<Slider
-										defaultValue={2}
-										min={1}
-										max={4}
-										step={1}
-										onChange={(e) => setLength(e)}
-										marks={heightMarks}
-										style={{ width: "100px" }}
-									/>
-								</Menu.Item>
-							</Menu.Menu> 
-						:
-							<></>
-					}
-				</Menu>
+				{
+					<Menu pointing secondary size="large">
+						<Menu.Menu position="left">
+							<MenuItem disabled>
+								Modes:
+							</MenuItem>
+							<Menu.Item name = "Paragraph" active={activeItem === 'p'} onClick={handleItemClick}>
+								{ width <= 550 ? <Icon name='paragraph' /> : 'Paragraph' }
+							</Menu.Item>
+						
+							<Menu.Item name = "Bullet Points" active={activeItem === 'b'} onClick={handleItemClick}>
+								{ width <= 550 ? <Icon name='list ul' /> : 'Bullet Points' }
+							</Menu.Item>
+						</Menu.Menu>
+						{
+							activeItem === 'p'? 
+								<Menu.Menu  position="right">
+									<MenuItem disabled>
+										{ width <= 550 ? '' : 'Summary Length:' }
+									</MenuItem>
+									<Menu.Item>
+										<Slider
+											defaultValue={2}
+											min={1}
+											max={4}
+											step={1}
+											onChange={(e) => setLength(e)}
+											marks={heightMarks}
+											style={{ width: "100px" }}
+										/>
+									</Menu.Item>
+								</Menu.Menu> 
+							:
+								<></>
+						}
+					</Menu>
+				}
 				<Row>
 					<Col>
 					
@@ -273,6 +287,14 @@ const TextBoxes = (props) => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+			<Dimmer active={loadingSubmit || loadingSpellCheck}>
+				<div className='dimmer-loader-text'>
+					This is going to take a while sit tight 
+				</div>
+				<div>
+					<BouncingDotsLoader />
+				</div>
+			</Dimmer>
 			
 		</div>
 	)
