@@ -33,7 +33,8 @@ const TextBoxes = (props) => {
 	const[getText, setText] = useState("")								//Get user's text
 	const [activeItem, setActiveItem] = useState("p")					//Setting paragraph or bullet points
 	const [loadingSubmit, setloadingSubmit] = useState(false)			//Setting up the loading animation for submission
-	const [loadingSpellCheck, setLoadingSpellCheck] = useState(false)	//Setting up the loading animation	
+	const [loadingSpellCheck, setLoadingSpellCheck] = useState(false)	//Setting up the loading animation	for spellcheck
+	const [dimmer, setDimmer] = useState(false)							//Setting up the dimmer	
 	const [length, setLength] = useState(2)								//Values for setting the length of Paragraphs
 	const [showModal, setShowModal] = useState(false);					//Setting popup for vocal stuff	
 	const [showErrorModal, setShowErrorModal] = useState(false);		//Setting popup for errors	
@@ -81,6 +82,7 @@ const TextBoxes = (props) => {
 		//Sanitizing boxes that are like [1] or [a] like from wikipedia
 		let sanitizeText = getText
 		sanitizeText = sanitizeText.replaceAll(/\[\d\]|\[\w\]/gi, '')
+		setDimmer(true)
 
 		//Setting the data in a more searchable form
 		let data = {text: sanitizeText}
@@ -129,6 +131,7 @@ const TextBoxes = (props) => {
 		.then((result)=>{
 			document.getElementsByClassName("text-output")[0].value = result
 			setloadingSubmit(false) 
+			setDimmer(false)
 			return result
 		})
 		.catch((err)=>{
@@ -145,6 +148,7 @@ const TextBoxes = (props) => {
 	const handleCloseModal = () => setShowModal(false);
 	const handleShowModal = () => setShowModal(true);
 	const handleCloseErrorModal = () => setShowErrorModal(false)
+	const handleDimmerClick = () => setDimmer(false)
 
 	//Start recording audio will only record one at a time, colors on click
 	//if spell check is turned on will spell check after talking.
@@ -287,7 +291,7 @@ const TextBoxes = (props) => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
-			<Dimmer active={loadingSubmit || loadingSpellCheck}>
+			<Dimmer active={dimmer} onClick={handleDimmerClick}>
 				<div className='dimmer-loader-text'>
 					This is going to take a while sit tight 
 				</div>
